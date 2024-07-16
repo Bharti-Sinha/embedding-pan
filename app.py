@@ -7,11 +7,11 @@ from transformers import AutoTokenizer, AutoModel
 from transformers import AutoModel, AutoConfig
 app = Flask(__name__)
 
-# load model and tokenizer
-global EMBEDDING_MODEL
-global TOKENIZER
-TOKENIZER = AutoTokenizer.from_pretrained('Salesforce/SFR-Embedding-Mistral')
-EMBEDDING_MODEL = AutoModel.from_pretrained('Salesforce/SFR-Embedding-Mistral')
+# # load model and tokenizer
+# global EMBEDDING_MODEL
+# global TOKENIZER
+# TOKENIZER = AutoTokenizer.from_pretrained('Salesforce/SFR-Embedding-Mistral')
+# EMBEDDING_MODEL = AutoModel.from_pretrained('Salesforce/SFR-Embedding-Mistral')
 
 
 # Define the path to your desired download location (ensure it has enough space)
@@ -46,23 +46,23 @@ def hello():
 def embed_string():
     data = request.get_json()
     query = " ".join(data["text"].strip().split())
-
+    print("query received", query)
     passages = [query]
     # get the embeddings
     max_length = 4096
     # input_texts = queries + passages
-    input_texts = passages
-    batch_dict = TOKENIZER(input_texts, max_length=max_length, padding=True, truncation=True, return_tensors="pt")
-    outputs = EMBEDDING_MODEL(**batch_dict)
-    embeddings = last_token_pool(outputs.last_hidden_state, batch_dict['attention_mask'])
-    # normalize embeddings
-    embeddings = F.normalize(embeddings, p=2, dim=1)
+    # input_texts = passages
+    # batch_dict = TOKENIZER(input_texts, max_length=max_length, padding=True, truncation=True, return_tensors="pt")
+    # outputs = EMBEDDING_MODEL(**batch_dict)
+    # embeddings = last_token_pool(outputs.last_hidden_state, batch_dict['attention_mask'])
+    # # normalize embeddings
+    # embeddings = F.normalize(embeddings, p=2, dim=1)
 
-    # try:
-    #     embeddings = EMBEDDING_MODEL.encode(query).tolist()
-    # except Exception as e:
-    #     print("Exception occcured while embedding: ", e)
-    #     embeddings = []
+    # # try:
+    # #     embeddings = EMBEDDING_MODEL.encode(query).tolist()
+    # # except Exception as e:
+    # #     print("Exception occcured while embedding: ", e)
+    # #     embeddings = []
     embeddings = []
     return {"len_of_embedding" : len(embeddings), "embeddings": embeddings}
 
